@@ -1,3 +1,5 @@
+//TODO update readme for this fork
+
 cordova-plugin-mauron85-background-geolocation
 ==============================
 
