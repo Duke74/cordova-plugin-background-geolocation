@@ -282,9 +282,10 @@ public class LocationUpdateService extends Service implements LocationListener {
         } else {
             isAcquiringStationaryLocation = true;
         }
-
+		
         // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
-        if (isAcquiringSpeed || isAcquiringStationaryLocation) {
+		
+        if (/*isAcquiringSpeed || isAcquiringStationaryLocation*/ true) {		//force agressive geolocation TODO add js parameter for this
             locationAcquisitionAttempts = 0;
             // Turn on each provider aggressively for a short period of time
             List<String> matchingProviders = locationManager.getAllProviders();
