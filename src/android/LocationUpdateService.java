@@ -129,7 +129,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         Log.i(TAG, "OnBind" + intent);
         return null;
     }
-
+	
     @Override
     public void onCreate() {
         super.onCreate();
@@ -175,6 +175,8 @@ public class LocationUpdateService extends Service implements LocationListener {
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(true);
         criteria.setCostAllowed(true);
+		
+		this.setPace(true);		//Force agressive geolocation at start
     }
 
     @Override
@@ -298,7 +300,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout*1000, scaledDistanceFilter, this);
         }
     }
-
+	
     /**
     * Translates a number representing desired accuracy of GeoLocation system from set [0, 10, 100, 1000].
     * 0:  most aggressive, most accurate, worst battery drain
@@ -323,7 +325,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         }
         return accuracy;
     }
-
+	
     /**
      * Returns the most accurate and timely previously detected location.
      * Where the last result is beyond the specified maximum distance or
