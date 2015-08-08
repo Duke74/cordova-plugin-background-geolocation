@@ -168,17 +168,15 @@ public class LocationUpdateService extends Service implements LocationListener {
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 
         wakeLock.acquire();
-
+		
         // Location criteria
         criteria = new Criteria();
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(true);
         criteria.setCostAllowed(true);
-		
-		this.setPace(true);		//Force agressive geolocation at start
     }
-
+	
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
@@ -204,7 +202,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             Intent main = new Intent(this, BackgroundGpsPlugin.class);
             main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, main,  PendingIntent.FLAG_UPDATE_CURRENT);
-
+			
             Notification.Builder builder = new Notification.Builder(this);
             builder.setContentTitle(notificationTitle);
             builder.setContentText(notificationText);
@@ -263,7 +261,7 @@ public class LocationUpdateService extends Service implements LocationListener {
      */
     private void setPace(Boolean value) {
         Log.i(TAG, "setPace: " + value);
-
+		
         Boolean wasMoving   = isMoving;
         isMoving            = value;
         isAcquiringStationaryLocation = false;
@@ -275,7 +273,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setHorizontalAccuracy(translateDesiredAccuracy(desiredAccuracy));
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
-
+		
         if (isMoving) {
             // setPace can be called while moving, after distanceFilter has been recalculated.  We don't want to re-acquire velocity in this case.
             if (!wasMoving) {
@@ -365,7 +363,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         }
         return bestResult;
     }
-
+	
     public void onLocationChanged(Location location) {
         Log.d(TAG, "- onLocationChanged: " + location.getLatitude() + "," + location.getLongitude() + ", accuracy: " + location.getAccuracy() + ", isMoving: " + isMoving + ", speed: " + location.getSpeed());
 
@@ -373,11 +371,12 @@ public class LocationUpdateService extends Service implements LocationListener {
             // Perhaps our GPS signal was interupted, re-acquire a stationaryLocation now.
             setPace(false);
         }
-
+		
         if (isDebugging) {
             Toast.makeText(this, "mv:"+isMoving+",acy:"+location.getAccuracy()+",v:"+location.getSpeed()+",df:"+scaledDistanceFilter, Toast.LENGTH_LONG).show();
         }
-        if (isAcquiringStationaryLocation) {
+		startTone("beep");
+       /* if (isAcquiringStationaryLocation) {
             if (stationaryLocation == null || stationaryLocation.getAccuracy() > location.getAccuracy()) {
                 stationaryLocation = location;
             }
@@ -429,12 +428,12 @@ public class LocationUpdateService extends Service implements LocationListener {
             }
         } else if (stationaryLocation != null) {
             return;
-        }
+        }*/
         // Go ahead and cache, push to server
         lastLocation = location;
         // persistLocation(location);
         broadcastLocation(location);
-
+		
         // if (this.isNetworkConnected()) {
         //     Log.d(TAG, "Scheduling location network post");
         //     schedulePostLocations();            
