@@ -430,6 +430,8 @@ public class LocationUpdateService extends Service implements LocationListener {
             return;
         }*/
         // Go ahead and cache, push to server
+		
+
         lastLocation = location;
         // persistLocation(location);
         broadcastLocation(location);
