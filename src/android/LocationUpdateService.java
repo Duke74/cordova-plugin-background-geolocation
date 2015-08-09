@@ -198,6 +198,8 @@ public class LocationUpdateService extends Service implements LocationListener {
             notificationTitle = intent.getStringExtra("notificationTitle");
             notificationText = intent.getStringExtra("notificationText");
 
+			
+			
             // Build a Notification required for running service in foreground.
             Intent main = new Intent(this, BackgroundGpsPlugin.class);
             main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -283,9 +285,16 @@ public class LocationUpdateService extends Service implements LocationListener {
             isAcquiringStationaryLocation = true;
         }
 		
-        // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
+		List<String> matchingProviders = locationManager.getAllProviders();		//force agressive geolocation TODO add js parameter for minTime
+            for (String provider: matchingProviders) {
+                if (provider != LocationManager.PASSIVE_PROVIDER) {
+                    locationManager.requestLocationUpdates(provider, 60000, (float)distanceFilter, this);
+                }
+            }
 		
-        if (/*isAcquiringSpeed || isAcquiringStationaryLocation*/ true) {		//force agressive geolocation TODO add js parameter for this
+        // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
+		/*
+        if (isAcquiringSpeed || isAcquiringStationaryLocation) {		
             locationAcquisitionAttempts = 0;
             // Turn on each provider aggressively for a short period of time
             List<String> matchingProviders = locationManager.getAllProviders();
@@ -296,7 +305,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             }
         } else {
             locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria, true), locationTimeout*1000, scaledDistanceFilter, this);
-        }
+        }*/
     }
 	
     /**
@@ -430,8 +439,6 @@ public class LocationUpdateService extends Service implements LocationListener {
             return;
         }*/
         // Go ahead and cache, push to server
-		
-
         lastLocation = location;
         // persistLocation(location);
         broadcastLocation(location);
