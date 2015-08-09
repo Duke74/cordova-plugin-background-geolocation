@@ -285,12 +285,8 @@ public class LocationUpdateService extends Service implements LocationListener {
             isAcquiringStationaryLocation = true;
         }
 		
-		List<String> matchingProviders = locationManager.getAllProviders();		//force agressive geolocation TODO add js parameter for minTime
-            for (String provider: matchingProviders) {
-                if (provider != LocationManager.PASSIVE_PROVIDER) {
-                    locationManager.requestLocationUpdates(provider, 60000, (float)distanceFilter, this);
-                }
-            }
+		//min time is set to update every 1s at fastest rate	//force agressive geolocation TODO add js parameter for minTime
+		locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 10000, (float)distanceFilter, this); 
 		
         // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
 		/*
@@ -493,7 +489,7 @@ public class LocationUpdateService extends Service implements LocationListener {
     private void startMonitoringStationaryRegion(Location location) {
         locationManager.removeUpdates(this);
         stationaryLocation = location;
-
+		
         Log.i(TAG, "- startMonitoringStationaryRegion (" + location.getLatitude() + "," + location.getLongitude() + "), accuracy:" + location.getAccuracy());
 
         // Here be the execution of the stationary region monitor
