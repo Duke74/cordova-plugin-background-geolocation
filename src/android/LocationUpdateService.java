@@ -285,8 +285,9 @@ public class LocationUpdateService extends Service implements LocationListener {
             isAcquiringStationaryLocation = true;
         }
 		
+		//Toast.makeText(this, "distanceFilter : "+ distanceFilter , Toast.LENGTH_LONG).show();
 		//min time is set to update every 1s at fastest rate	//force agressive geolocation TODO add js parameter for minTime
-		locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 10000, (float)distanceFilter, this); 
+		locationManager.requestLocationUpdates(locationManager.getBestProvider(criteria,true), 1000, (float)distanceFilter, this); 
 		
         // Temporarily turn on super-aggressive geolocation on all providers when acquiring velocity or stationary location.
 		/*
@@ -371,7 +372,7 @@ public class LocationUpdateService extends Service implements LocationListener {
 	
     public void onLocationChanged(Location location) {
         Log.d(TAG, "- onLocationChanged: " + location.getLatitude() + "," + location.getLongitude() + ", accuracy: " + location.getAccuracy() + ", isMoving: " + isMoving + ", speed: " + location.getSpeed());
-
+		
         if (!isMoving && !isAcquiringStationaryLocation && stationaryLocation==null) {
             // Perhaps our GPS signal was interupted, re-acquire a stationaryLocation now.
             setPace(false);
@@ -380,7 +381,7 @@ public class LocationUpdateService extends Service implements LocationListener {
         if (isDebugging) {
             Toast.makeText(this, "mv:"+isMoving+",acy:"+location.getAccuracy()+",v:"+location.getSpeed()+",df:"+scaledDistanceFilter, Toast.LENGTH_LONG).show();
         }
-		startTone("beep");
+		//startTone("beep");
        /* if (isAcquiringStationaryLocation) {
             if (stationaryLocation == null || stationaryLocation.getAccuracy() > location.getAccuracy()) {
                 stationaryLocation = location;
